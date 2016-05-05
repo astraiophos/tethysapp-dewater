@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: tethysapp-dewater
+Version: 0
+Summary: app to simulate dewatering an area where the user defines the bedrock elevation and groundwater table elevation (constants) and can add wells to draw the water out of the aquifer.
+Home-page: UNKNOWN
+Author: Jacob Fullerton
+Author-email: jacobbfull@gmail.com
+License: BSD 2-Clause License
+Description: UNKNOWN
+Platform: UNKNOWN
