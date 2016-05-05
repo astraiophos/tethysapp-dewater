@@ -1,5 +1,16 @@
 {% extends "dewater/base.html" %}
 
 {% block app_content %}
-<div id = "map"></div>
+  <body>
+
+    <div id="info">
+      <div>Select a shape then draw on map to add graphic</div>
+      <button id="Point">Point</button>
+      <button id="Multipoint">Multipoint</button>
+      <button id="Extent">Rectangle</button>
+    </div>
+
+    <div id="map"></div>
+
+  </body>
 {% endblock %}
