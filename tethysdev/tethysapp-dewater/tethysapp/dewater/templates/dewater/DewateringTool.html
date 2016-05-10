@@ -1,16 +1,19 @@
 {% extends "dewater/base.html" %}
 
+{% load tethys_gizmos %}
+
 {% block app_content %}
   <body>
 
-    <div id="info">
-      <div>Select a shape then draw on map to add graphic</div>
-      <button id="Point">Point</button>
-      <button id="Multipoint">Multipoint</button>
-      <button id="Extent">Rectangle</button>
-    </div>
+  {% gizmo map_view map_view_options %}
+    <!--<div id="info">-->
+      <!--<div>Select a shape then draw on map to add graphic</div>-->
+      <!--<button id="Point">Point</button>-->
+      <!--<button id="Multipoint">Multipoint</button>-->
+      <!--<button id="Extent">Rectangle</button>-->
+    <!--</div>-->
 
-    <div id="map"></div>
+    <!--<div id="map"></div>-->
 
   </body>
 {% endblock %}
