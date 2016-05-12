@@ -13,16 +13,16 @@
 {% block app_title %}{{ tethys_app.name }}{% endblock %}
 
 {% block app_navigation_items %}
-  <li class="title">App Navigation</li>
-  <li {% if page_id = '1' %} class="active"{% endif %} >
-    <a href="{% url 'dewater:tool' %}">Dewatering Tool</a></li>
-  <li class="title">Help Files</li>
-  <li {% if page_id = '2' %} class="active"{% endif %}>
-    <a href="{% url 'dewater:user' %}">User Documentation</a></li>
-  <li {% if page_id = '3' %} class="active"{% endif %}>
-    <a href="{% url 'dewater:tech' %}">Technical Documentation</a></li>
-  <li {% if page_id = '4' %} class="active"{% endif %}>
-    <a href="{% url 'dewater:license' %}">License</a></li>
+  <!--<li class="title">App Navigation</li>-->
+  <!--<li {% if page_id = '1' %} class="active"{% endif %} >-->
+    <!--<a href="{% url 'dewater:tool' %}">Dewatering Tool</a></li>-->
+  <!--<li class="title">Help Files</li>-->
+  <!--<li {% if page_id = '2' %} class="active"{% endif %}>-->
+    <!--<a href="{% url 'dewater:user' %}">User Documentation</a></li>-->
+  <!--<li {% if page_id = '3' %} class="active"{% endif %}>-->
+    <!--<a href="{% url 'dewater:tech' %}">Technical Documentation</a></li>-->
+  <!--<li {% if page_id = '4' %} class="active"{% endif %}>-->
+    <!--<a href="{% url 'dewater:license' %}">License</a></li>-->
 {% endblock %}
 
 {% block app_content %}
@@ -33,12 +33,13 @@
 
 {% block content_dependent_styles %}
   {{ block.super }}
-  <link rel="stylesheet" href="https://js.arcgis.com/3.16/esri/css/esri.css">
   <link href="{% static 'dewater/css/main.css' %}" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 {% endblock %}
 
 {% block scripts %}
   {{ block.super }}
-  <script src="https://js.arcgis.com/3.16/"></script>
   <script src="{% static 'dewater/js/main.js' %}" type="text/javascript"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
 {% endblock %}

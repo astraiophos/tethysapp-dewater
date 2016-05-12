@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from tethys_sdk.gizmos import MapView, MVDraw, MVView, MVLayer, MVLegendClass
+from tethys_sdk.gizmos import *
 
 @login_required()
 def home(request):
@@ -46,7 +46,52 @@ def tool(request):
             legend=True
     )
 
-    context = {'page_id' : '1', 'map_view_options': map_view_options}
+    k = TextInput(display_text='Average Hydraulic Conductivity',
+                  name='k',
+                  initial='0.000231',
+                  placeholder='e.g. 0.000231',
+                  prepend='k =',
+                  append='[ft/s]',
+                  )
+    bedrock = TextInput(display_text='Bedrock Elevation',
+                  name='bedrock',
+                  initial='0',
+                  placeholder='e.g. 0',
+                  prepend='Elev. =',
+                  append='[ft]',
+                  )
+    iwte = TextInput(display_text='Initial Water Table Elevation',
+                  name='iwte',
+                  initial='100',
+                  placeholder='e.g. 100',
+                  prepend='Elev. =',
+                  append='[ft]',
+                  )
+    q = TextInput(display_text='Total Combined Flow',
+                  name='q',
+                  initial='2',
+                  placeholder='e.g. 2',
+                  prepend='Q =',
+                  append='[cfs]',
+                  )
+    dwte = TextInput(display_text='Desired Water Table Elevation',
+                  name='dwte',
+                  initial='70',
+                  placeholder='e.g. 70',
+                  prepend='Elev. =',
+                  append='[ft]',
+                  )
+    execute = Button(display_text='Calculate Water Table Elevations',
+                     attributes='onclick=app.dewater()',
+                     submit=True)
+
+    context = { 'page_id' : '1', 'map_view_options': map_view_options,
+                'k':k,
+                'bedrock':bedrock,
+                'iwte':iwte,
+                'q':q,
+                'dwte':dwte,
+                'execute':execute}
 
     return render(request, 'dewater/DewateringTool.html', context)
 

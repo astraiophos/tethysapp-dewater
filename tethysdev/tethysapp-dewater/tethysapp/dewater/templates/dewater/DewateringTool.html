@@ -2,18 +2,23 @@
 
 {% load tethys_gizmos %}
 
+{% block app_navigation_items %}
+
+<li class="title">Aquifer Properties</li>
+<form id="dewater" action="{% url 'dewater:tool' %}" method="post">
+  {% csrf_token %}
+
+  {% gizmo text_input k %}
+  {% gizmo text_input bedrock %}
+  {% gizmo text_input iwte %}
+  {% gizmo text_input q %}
+  {% gizmo text_input dwte %}
+</form>
+  {% gizmo button execute %}
+{% endblock %}
+
 {% block app_content %}
-  <body>
 
   {% gizmo map_view map_view_options %}
-    <!--<div id="info">-->
-      <!--<div>Select a shape then draw on map to add graphic</div>-->
-      <!--<button id="Point">Point</button>-->
-      <!--<button id="Multipoint">Multipoint</button>-->
-      <!--<button id="Extent">Rectangle</button>-->
-    <!--</div>-->
 
-    <!--<div id="map"></div>-->
-
-  </body>
 {% endblock %}
