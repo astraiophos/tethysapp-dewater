@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/tethysapp-dewater.iml" filepath="$PROJECT_DIR$/.idea/tethysapp-dewater.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../tethysapp-my_first_app/.idea/tethysapp-my_first_app.iml" filepath="$PROJECT_DIR$/../tethysapp-my_first_app/.idea/tethysapp-my_first_app.iml" />
     </modules>
   </component>
 </project>

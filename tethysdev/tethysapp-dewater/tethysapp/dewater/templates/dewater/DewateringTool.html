@@ -5,6 +5,7 @@
 {% block app_navigation_items %}
 
 <li class="title">Aquifer Properties</li>
+<div id="myTabs"></div>
 <form id="dewater" action="{% url 'dewater:tool' %}" method="post">
   {% csrf_token %}
 
