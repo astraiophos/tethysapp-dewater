@@ -84,6 +84,9 @@ def tool(request):
     execute = Button(display_text='Calculate Water Table Elevations',
                      attributes='onclick=app.dewater()',
                      submit=True)
+    instructions = Button(display_text='Instructions',
+                     attributes='onclick=app.dewater()',
+                     submit=True)
 
     context = { 'page_id' : '1', 'map_view_options': map_view_options,
                 'k':k,
