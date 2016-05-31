@@ -67,16 +67,17 @@ console.log(wCoords);
 do {
     if (isOdd(i) === false){
         pXCoords[i] = (pCoords[i]);
-        console.log(pCoords[i]);
+        console.log(pXCoords[i]);
         i = i+1;
         }
 
     else if (isOdd(i) ===true){
         pYCoords[i] = (pCoords[i]);
-        console.log(i);
+        console.log(pYCoords[i]);
+        i = i+1;
         }
 }
-while (i<5);
+while (i<10);
 
 //reinitialize counter
 i = 0;
@@ -84,12 +85,14 @@ i = 0;
 do{
     if (isOdd(i) === false){
         wXCoords[i] = (wCoords[i]);
-        console.log(wCoords[i]);
+        console.log(wXCoords[i]);
+        i = i+1;
         }
 
     else if (isOdd(i) === true){
         wYCoords[i] = (wCoords[i]);
         console.log(wYCoords[i]);
+        i = i+1;
         }
     }
 while (i < wCoords.length);
