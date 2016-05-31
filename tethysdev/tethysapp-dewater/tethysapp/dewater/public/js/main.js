@@ -15,7 +15,7 @@ map.on('pointermove', function(evt) {
     map.getTarget().style.cursor = hit ? 'pointer' :'';
     });
 };
-function dewater(){
+function verify(){
 //initialize the variables for the functions to be used
 map = TETHYS_MAP_VIEW.getMap();
 
@@ -23,6 +23,7 @@ var wells = [];
 var perimeter = [];
 var i = 1
 
+//this reads the number of features found in the map object and verifies that all of the required features are present
 numFeat = map.getLayers().item(1).getSource().getFeatures();
 console.log(numFeat.length)
     do  {
@@ -38,12 +39,66 @@ console.log(numFeat.length)
     i = i + 1
     }
     while (i < numFeat.length+1);
-console.log(wells)
-console.log(perimeter)
+console.log(wells);
+console.log(perimeter);
+dewater(perimeter,wells);
 };
 
+function isOdd(num) {return !!(num % 2);}
+
+function dewater(p,w){
+var pCoords = p.toString();
+var wCoords = w.toString();
+
+var pXCoords = [];
+var pYCoords = [];
+var wXCoords = [];
+var wYCoords = [];
+
+//Split the coordinate arrays into separate X and Y coordinate arrays
+
+var i = 0;
+
+pCoords = pCoords.split(",");
+console.log(pCoords);
+wCoords = wCoords.split(",");
+console.log(wCoords);
+
+do {
+    if (isOdd(i) === false){
+        pXCoords[i] = (pCoords[i]);
+        console.log(pCoords[i]);
+        i = i+1;
+        }
+
+    else if (isOdd(i) ===true){
+        pYCoords[i] = (pCoords[i]);
+        console.log(i);
+        }
+}
+while (i<5);
+
+//reinitialize counter
+i = 0;
+
+do{
+    if (isOdd(i) === false){
+        wXCoords[i] = (wCoords[i]);
+        console.log(wCoords[i]);
+        }
+
+    else if (isOdd(i) === true){
+        wYCoords[i] = (wCoords[i]);
+        console.log(wYCoords[i]);
+        }
+    }
+while (i < wCoords.length);
+}
+
+
 //Create public functions to be called in the controller
-app = {dewater: dewater}
+app = {dewater: dewater,
+        verify: verify}
 
 
 

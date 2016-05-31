@@ -82,7 +82,7 @@ def tool(request):
                   append='[ft]',
                   )
     execute = Button(display_text='Calculate Water Table Elevations',
-                     attributes='onclick=app.dewater()',
+                     attributes='onclick=app.verify()',
                      submit=True)
     instructions = Button(display_text='Instructions',
                      attributes='onclick=app.dewater()',
