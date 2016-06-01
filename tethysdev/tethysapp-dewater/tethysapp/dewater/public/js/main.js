@@ -3,6 +3,9 @@ var map;
 var wells = [];
 var perimeter = [];
 var numFeat = [];
+//counters for building arrays
+var i = 0;
+var c = 0;
 
 function listen() {
 map = TETHYS_MAP_VIEW.getMap();
@@ -21,7 +24,7 @@ map = TETHYS_MAP_VIEW.getMap();
 
 var wells = [];
 var perimeter = [];
-var i = 1
+i = 1;
 
 //this reads the number of features found in the map object and verifies that all of the required features are present
 numFeat = map.getLayers().item(1).getSource().getFeatures();
@@ -71,7 +74,7 @@ do {
         i = i+1;
         }
 
-    else if (isOdd(i) ===true){
+    else if (isOdd(i) === true){
         pYCoords[i] = (pCoords[i]);
         console.log(pYCoords[i]);
         i = i+1;
@@ -96,6 +99,29 @@ do{
         }
     }
 while (i < wCoords.length);
+
+//This section defines the cell size based on a percentage for the area selected
+//the shortest dimension is what determines the cellsize
+var percent = 0.1;
+var cellSide = 0.0;
+
+if (abs(pXCoords[0]-pXCoords[1]) > abs(pYCoords[0]-pYCoords[1])){
+    cellSide = abs(pXCoords[0]-pXCoords[1])*percent;}
+else if (abs(pXCoords[0]-pXCoords[1]) < abs(pYCoords[0]-pYCoords[1])) {
+    cellSide = abs(pYCoords[0]-pYCoords[1])*percent;}
+else {
+    cellSide = abs(pXCoords[0]-pXCoords[1])*percent;}
+
+//This section constructs the array of 'z' values defining the water table elevations
+//Cells are defined at the top left corner
+var waterTable = [];
+
+i = 0;
+c = 0;
+
+do {
+    }
+
 }
 
 
