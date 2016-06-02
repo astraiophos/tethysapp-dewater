@@ -105,23 +105,52 @@ while (i < wCoords.length);
 var percent = 0.1;
 var cellSide = 0.0;
 
-if (abs(pXCoords[0]-pXCoords[1]) > abs(pYCoords[0]-pYCoords[1])){
-    cellSide = abs(pXCoords[0]-pXCoords[1])*percent;}
-else if (abs(pXCoords[0]-pXCoords[1]) < abs(pYCoords[0]-pYCoords[1])) {
-    cellSide = abs(pYCoords[0]-pYCoords[1])*percent;}
+if (Math.abs(pXCoords[0]-pXCoords[1]) > Math.abs(pYCoords[0]-pYCoords[1])){
+    cellSide = Math.abs(pXCoords[0]-pXCoords[1])*percent;}
+else if (Math.abs(pXCoords[0]-pXCoords[1]) < Math.abs(pYCoords[0]-pYCoords[1])) {
+    cellSide = Math.abs(pYCoords[0]-pYCoords[1])*percent;}
 else {
-    cellSide = abs(pXCoords[0]-pXCoords[1])*percent;}
+    cellSide = Math.abs(pXCoords[0]-pXCoords[1])*percent;}
+//This section constructs the featurecollection polygons defining the water table elevations
+//Cells are defined at the corners, water table elevation is defined at the center of the cell
 
-//This section constructs the array of 'z' values defining the water table elevations
-//Cells are defined at the top left corner
 var waterTable = [];
+var sum = 0.0;  //This is for summing q*ln(R/r)
 
-i = 0;
-c = 0;
-
-do {
+for (long = pXCoords[0]-cellSide; long < pXCoords[1]+cellSide; long += cellSide) {
+    for (lat = pYCoords[0]-cellSide; lat < pYCoords[1]+cellSide; lat += cellSide) {
+        waterTable.push({
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Polygon',
+                'coordinates': [
+                                [   [long,lat],
+                                    [long + cellSide, lat],
+                                    [long + cellSide, lat + cellSide],
+                                    [long, lat + cellSide],
+                                    [long,lat]
+                                ]
+                               ]
+                        },
+                'properties': {
+                    'elevation' : 100,
+                }
+                        })
+        }
     }
 
+
+var raster_elev = {
+    'type': 'FeatureCollection',
+    'crs': {
+        'type': 'name',
+        'properties':{
+            'name':'EPSG:4326'
+            }
+    },
+
+
+};
 }
 
 
