@@ -63,16 +63,25 @@ console.log(numFeat.length)
     do  {
     if (map.getLayers().item(1).getSource().getRevision() === 0) {
         console.log("You don't have any features, please provide the boundary and the well locations.")
-        break;}
+        return;}
     if (map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getType() === 'Point') {
         wells.push(map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getCoordinates());}
     else if (map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getType() === 'Polygon') {
         if(perimeter.length === 1){alert("You have more than one Perimeter, delete the extra(s)");
-            break;}
+            return;}
         perimeter.push(map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getCoordinates());}
     i = i + 1
     }
     while (i < numFeat.length+1);
+
+if (wells.length === 0) {
+    console.log("You need wells to perform the analysis, please add at least one well.");
+    return;
+    }
+else if (perimeter.length === 0) {
+    console.log ("You need a boundary for your analysis, please add a boundary.");
+    return;
+    }
 console.log(wells);
 console.log(perimeter);
 dewater(perimeter,wells);
@@ -223,9 +232,9 @@ do {
 
     wellr = Math.pow((Math.pow(deltax,2) + Math.pow(deltay,2)),0.5);
 
-    //Make sure that we don't divide by zero
-    if (wellr < 0.5){
-        wellr = 0.5;
+    //Make sure that we don't create a complex value for the water table elevation
+    if (wellr < Math.exp(Math.log(500)-Math.PI*k.value*Math.pow(H,2)/Q)){
+        wellr = Math.exp(Math.log(500)-Math.PI*k.value*Math.pow(H,2)/Q);
         }
     if (Math.log(500/wellr)<0){
         sum = sum;
@@ -239,6 +248,19 @@ while(i < wXCoords.length);
 
 wtElevation = Math.pow((Math.pow(H,2) - sum/(Math.PI*k.value)),0.5)
 
+console.log(wtElevation);
+
+if (isNaN(wtElevation) === true) {
+    console.log("Check Values");
+    console.log(wellx);
+    console.log(welly);
+    console.log(deltax);
+    console.log(deltay);
+    console.log(wellr);
+    console.log(sum);
+    console.log("End Check Values");
+    }
+
 return wtElevation;
 }
 
@@ -247,22 +269,31 @@ function addWaterTable(raster_elev){
 var getStyleColor;
 
 getStyleColor = function(value) {
-    if (value > dwte.value+dwte.value*0.2)
-        return [64,196,64,0.5];
-    else if (value > dwte.value+dwte.value*0.1)
-        return [108,152,64,0.5];
-    else if (value < dwte.value)
-        return [152,108,64,0.5];
+    if (value > Number(dwte.value)+Number(dwte.value*0.2))
+        return [196,32,32,1];     //red
+    else if (value > Number(dwte.value)+Number(dwte.value*0.1))
+        return [255,128,0,1];       //orange
+    else if (value > dwte.value)
+        return [255,255,0,1];       //yellow
+    else if (value === 0)
+        return [0,0,0,1];           //black
+    else if (value <= dwte.value)
+        return [0,255,0,1];         //green
     else
-        return [196,32,32,0.5];
+        return [196,32,32,1];
     };
 
 var defaultStyle = new ol.style.Style({
+//    var img = new Image();
+//    img.src = '/home/jacobbf1/tethysdev/tethysapp-dewater/tethysapp/dewater/public/images/Dried Cell.png';
+//    var pat = context.createPattern(img,"repeat");
+//
+//    context.fillStyle = pat;
     fill: new ol.style.Fill({
-        color: [250,250,250,0.5]
+        color: [0,0,0,1]
     }),
     stroke: new ol.style.Stroke({
-    color: [220,220,220,0.5],
+    color: [220,220,220,1],
     width: 1
     })
 });

@@ -19,8 +19,8 @@ def tool(request):
     # Define view options
     view_options = MVView(
         projection='EPSG:4326',
-        center=[-100, 40],
-        zoom=3.5,
+        center=[-111.64925, 40.24721],
+        zoom=15.5,
         maxZoom=18,
         minZoom=2
     )
