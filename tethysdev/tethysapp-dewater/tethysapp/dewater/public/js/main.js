@@ -1,7 +1,10 @@
 $(document).ready(function() {
+//  ########################################## Declare variables here ##################################################
+
 var map;
 var wells = [];
 var perimeter = [];
+var mapView = [];
 var numFeat = [];
 //variables for watertable calculations
 var wellx = 0;
@@ -18,17 +21,8 @@ var i = 0;
 var c = 0;
 var counter = 0;
 
-function listen() {
-map = TETHYS_MAP_VIEW.getMap();
+//  #################################### Verify that the user has the necessary variables ##############################
 
-map.on('pointermove', function(evt) {
-    if (evt.dragging) return;
-    var pixel = map.getEventPixel(evt.originalEvent);
-    var hit = map.hasFeatureAtPixel(pixel);
-
-    map.getTarget().style.cursor = hit ? 'pointer' :'';
-    });
-};
 function verify(){
 //initialize the variables for the functions to be used
 map = TETHYS_MAP_VIEW.getMap();
@@ -61,16 +55,16 @@ if (Q < 0){
 numFeat = map.getLayers().item(1).getSource().getFeatures();
 console.log(numFeat.length)
     do  {
-    if (map.getLayers().item(1).getSource().getRevision() === 0) {
-        console.log("You don't have any features, please provide the boundary and the well locations.")
-        return;}
-    if (map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getType() === 'Point') {
-        wells.push(map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getCoordinates());}
-    else if (map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getType() === 'Polygon') {
-        if(perimeter.length === 1){alert("You have more than one Perimeter, delete the extra(s)");
+        if (map.getLayers().item(1).getSource().getRevision() === 0) {
+            console.log("You don't have any features, please provide the boundary and the well locations.")
             return;}
-        perimeter.push(map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getCoordinates());}
-    i = i + 1
+        if (map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getType() === 'Point') {
+            wells.push(map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getCoordinates());}
+        else if (map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getType() === 'Polygon') {
+            if(perimeter.length === 1){alert("You have more than one Perimeter, delete the extra(s)");
+                return;}
+            perimeter.push(map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getCoordinates());}
+        i = i + 1
     }
     while (i < numFeat.length+1);
 
@@ -82,14 +76,20 @@ else if (perimeter.length === 0) {
     console.log ("You need a boundary for your analysis, please add a boundary.");
     return;
     }
-console.log(wells);
-console.log(perimeter);
-dewater(perimeter,wells);
+
+// Obtain the map view extents for bounding the grid a second time
+mapView = map.getView().calculateExtent(map.getSize());
+
+//console.log(wells);
+//console.log(perimeter);
+dewater(perimeter,wells,mapView);
 };
 
 function isOdd(num) {return !!(num % 2);}
 
-function dewater(p,w){
+//  #################################### From the input shapes and variables, create a grid ############################
+
+function dewater(p,w,mapView){
 var pCoords = p.toString();
 var wCoords = w.toString();
 
@@ -97,6 +97,8 @@ var pXCoords = [];
 var pYCoords = [];
 var wXCoords = [];
 var wYCoords = [];
+var mapXCoords = [];
+var mapYCoords = [];
 
 //Split the coordinate arrays into separate X and Y coordinate arrays
 
@@ -105,10 +107,13 @@ c = 0;
 counter = 0;
 
 pCoords = pCoords.split(",");
-console.log(pCoords);
+//console.log(pCoords);
 wCoords = wCoords.split(",");
-console.log(wCoords);
+//console.log(wCoords);
 
+
+
+// Perimeter coordinates by X and Y
 do {
     if (isOdd(i) === false){
         pXCoords[c] = parseFloat(pCoords[i]);
@@ -131,6 +136,7 @@ i = 0;
 c = 0;
 counter = 0;
 
+// Well coordinates by X and Y
 do{
     if (isOdd(i) === false){
         wXCoords[c] = parseFloat(wCoords[i]);
@@ -147,8 +153,17 @@ do{
         }
     }
 while (i < wCoords.length);
-console.log("Well 'x' coordinates " + wXCoords);
-console.log("Well 'y' coordinates " + wYCoords);
+
+// Map View Extent coordinates
+
+mapXCoords[0] = mapView[0];
+mapYCoords[0] = mapView[1];
+mapXCoords[1] = mapView[2];
+mapYCoords[1] = mapView[3];
+
+//for debugging purposes
+//console.log("Well 'x' coordinates " + wXCoords);
+//console.log("Well 'y' coordinates " + wYCoords);
 
 //This section defines the cell size based on a percentage for the area selected
 //the shortest dimension is what determines the cellsize
@@ -169,32 +184,61 @@ console.log(cellSide);
 //Cells are defined at the corners, water table elevation is defined at the center of the cell
 
 var waterTable = [];
+var periferyTable = [];
 var sum = 0.0;  //This is for summing q*ln(R/r)
 
 console.log("Getting water table");
 
-for (long = pXCoords[0]-cellSide; long < pXCoords[2]+cellSide; long += cellSide) {
-    for (lat = pYCoords[0]-cellSide; lat < pYCoords[2]+cellSide; lat += cellSide) {
-        waterTable.push({
+//  ################################# Build the grid with polygon cells ################################################
+
+// This code builds the grid with the bounding box being the perimeter drawn by the user
+//for (long = pXCoords[0]-cellSide; long < pXCoords[2]+cellSide; long += cellSide) {
+//    for (lat = pYCoords[0]-cellSide; lat < pYCoords[2]+cellSide; lat += cellSide) {
+//        waterTable.push({
+//            'type': 'Feature',
+//            'geometry': {
+//                'type': 'Polygon',
+//                'coordinates': [
+//                                [   [long,lat],
+//                                    [long + cellSide, lat],
+//                                    [long + cellSide, lat + cellSide],
+//                                    [long, lat + cellSide],
+//                                    [long,lat]
+//                                ]
+//                               ]
+//                        },
+//                'properties': {
+//                    'elevation' : elevationCalc(long,lat,wXCoords,wYCoords,cellSide),
+//                }
+//                        });
+//        }
+//    }
+
+// This code builds the grid using the bounding box as the zoomed in view of the user
+for (long = mapXCoords[0]-cellSide; long < mapXCoords[1]; long += cellSide) {
+    for (lat = mapYCoords[0]-cellSide; lat < mapYCoords[1]; lat += cellSide){
+        periferyTable.push({
             'type': 'Feature',
             'geometry': {
                 'type': 'Polygon',
-                'coordinates': [
-                                [   [long,lat],
+                'coordinates':  [
+                                 [  [long,lat],
                                     [long + cellSide, lat],
                                     [long + cellSide, lat + cellSide],
                                     [long, lat + cellSide],
                                     [long,lat]
+                                 ]
                                 ]
-                               ]
-                        },
+                },
                 'properties': {
-                    'elevation' : elevationCalc(long,lat,wXCoords,wYCoords),
+                    'elevation' : elevationCalc(long,lat,wXCoords,wYCoords,cellSide),
                 }
-                        });
+            });
         }
     }
-console.log(waterTable);
+
+//console.log(waterTable);
+//console.log(periferyTable);
 
 var raster_elev = {
     'type': 'FeatureCollection',
@@ -206,10 +250,23 @@ var raster_elev = {
     },
     'features': waterTable
 };
-addWaterTable(raster_elev);
+var raster_elev_mapView = {
+    'type': 'FeatureCollection',
+    'crs': {
+        'type': 'name',
+        'properties':{
+            'name':'EPSG:4326'
+            }
+    },
+    'features': periferyTable
+};
+//addWaterTable(raster_elev);
+addWaterTable(raster_elev_mapView);
 }
 
-function elevationCalc(long,lat,wXCoords,wYCoords) {
+//  #################################### Calculate the water elevation of each cell  ###################################
+
+function elevationCalc(long,lat,wXCoords,wYCoords,cellSide) {
 
 wellx = 0;
 welly = 0;
@@ -227,8 +284,8 @@ do {
     welly = wYCoords[i];
     Q = q.value/wXCoords.length;
 
-    deltax = Math.abs(long-wellx);
-    deltay = Math.abs(lat-welly);
+    deltax = Math.abs(long+cellSide/2-wellx);
+    deltay = Math.abs(lat+cellSide/2-welly);
 
     wellr = Math.pow((Math.pow(deltax,2) + Math.pow(deltay,2)),0.5);
 
@@ -248,39 +305,46 @@ while(i < wXCoords.length);
 
 wtElevation = Math.pow((Math.pow(H,2) - sum/(Math.PI*k.value)),0.5)
 
-console.log(wtElevation);
-
-if (isNaN(wtElevation) === true) {
-    console.log("Check Values");
-    console.log(wellx);
-    console.log(welly);
-    console.log(deltax);
-    console.log(deltay);
-    console.log(wellr);
-    console.log(sum);
-    console.log("End Check Values");
-    }
+// for debugging purposes
+//console.log(wtElevation);
+//
+//if (isNaN(wtElevation) === true) {
+//    console.log("Check Values");
+//    console.log(wellx);
+//    console.log(welly);
+//    console.log(deltax);
+//    console.log(deltay);
+//    console.log(wellr);
+//    console.log(sum);
+//    console.log("End Check Values");
+//    }
 
 return wtElevation;
 }
+
+//  #################################### Add the new water table raster to the map #####################################
 
 function addWaterTable(raster_elev){
 
 var getStyleColor;
 
 getStyleColor = function(value) {
-    if (value > Number(dwte.value)+Number(dwte.value*0.2))
-        return [196,32,32,1];     //red
-    else if (value > Number(dwte.value)+Number(dwte.value*0.1))
-        return [255,128,0,1];       //orange
+    if (value > Number(dwte.value)+Number(dwte.value*0.375))
+        return [0,32,229,0.7];       //blue, Hex:0020E5
+    else if (value > Number(dwte.value)+Number(dwte.value*0.125))
+        return [1,107,231,0.7];       //Light Blue, Hex:016BE7
+    else if (value > Number(dwte.value)+Number(dwte.value*0.25))
+        return [0,158,223,0.7];     //Lighter Blue, Hex:009EDF
     else if (value > dwte.value)
-        return [255,255,0,1];       //yellow
-    else if (value === 0)
-        return [0,0,0,1];           //black
-    else if (value <= dwte.value)
-        return [0,255,0,1];         //green
+        return [0,218,157,0.7];       //Turqoise(ish), Hex:00DA9D
+    else if (value > Number(dwte.value)-Number(dwte.value*0.125))
+        return [0,255,0,0.7];         //green
+    else if (value > Number(dwte.value)-Number(dwte.value*0.25))
+        return [255,255,0,0.7];       //yellow, Hex:FFFF00
+    else if (value > Number(dwte.value)-Number(dwte.value*0.375))
+        return [196,87,0,0.7];       //Orange, Hex:C45700
     else
-        return [196,32,32,1];
+        return [191,0,23, 0.7];           //Red, Hex:BF0017
     };
 
 var defaultStyle = new ol.style.Style({
@@ -290,10 +354,10 @@ var defaultStyle = new ol.style.Style({
 //
 //    context.fillStyle = pat;
     fill: new ol.style.Fill({
-        color: [0,0,0,1]
+        color: [0,0,0,0.7]
     }),
     stroke: new ol.style.Stroke({
-    color: [220,220,220,1],
+    color: [220,220,220,0.7],
     width: 1
     })
 });
@@ -361,4 +425,19 @@ app = {dewater: dewater,
 
 //the drawbox function is the map.getControls().item(11);
 //map.getLayers().item(1).getSource().getFeatures(); will aquire the array of features
+
+
+//function listen() {
+//map = TETHYS_MAP_VIEW.getMap();
+//
+//map.on('pointermove', function(evt) {
+//    if (evt.dragging) return;
+//    var pixel = map.getEventPixel(evt.originalEvent);
+//    var hit = map.hasFeatureAtPixel(pixel);
+//
+//    map.getTarget().style.cursor = hit ? 'pointer' :'';
+//    });
+//};
+
 });
+
