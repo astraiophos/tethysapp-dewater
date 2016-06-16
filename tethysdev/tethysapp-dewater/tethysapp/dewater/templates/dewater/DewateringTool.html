@@ -6,7 +6,6 @@
 
 <li class="title">Aquifer Properties</li>
 <div id="myTabs"></div>
-  {%gizmo button instructions %}
 <form id="dewater" action="{% url 'dewater:tool' %}" method="post">
   {% csrf_token %}
 
@@ -17,6 +16,8 @@
   {% gizmo text_input dwte %}
 </form>
   {% gizmo button execute %}
+
+  {% gizmo button instructions %}
 {% endblock %}
 
 

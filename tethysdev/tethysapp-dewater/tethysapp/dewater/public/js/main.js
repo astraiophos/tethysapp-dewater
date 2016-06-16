@@ -33,22 +33,22 @@ i = 1;
 
 H = dwte.value - bedrock.value;
 if (H < 0){
-    console.log("Your desired elevation is lower than the bedrock elevation");
+    window.confirm("Your desired elevation is lower than the bedrock elevation");
     return;}
 
 H = iwte.value - bedrock.value;
 if (H < 0){
-    console.log("Your initial elevation is lower than the bedrock elevation");
+    window.confirm("Your initial elevation is lower than the bedrock elevation");
     return;}
 
 H =  iwte.value- dwte.value;
 if (H < 0){
-    console.log("Your desired elevation is higher than the initial elevation");
+    window.confirm("Your desired elevation is higher than the initial elevation");
     return;}
 
 Q = q.value;
 if (Q < 0){
-    console.log("For dewatering you need to pump water out, please change the sign of your pumping value");
+    window.confirm("For dewatering you need to pump water out, please change the sign of your pumping value");
     return;}
 
 //this reads the number of features found in the map object and verifies that all of the required features are present
@@ -56,12 +56,12 @@ numFeat = map.getLayers().item(1).getSource().getFeatures();
 console.log(numFeat.length)
     do  {
         if (map.getLayers().item(1).getSource().getRevision() === 0) {
-            console.log("You don't have any features, please provide the boundary and the well locations.")
+            window.confirm("You don't have any features, please provide the boundary and the well locations.")
             return;}
         if (map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getType() === 'Point') {
             wells.push(map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getCoordinates());}
         else if (map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getType() === 'Polygon') {
-            if(perimeter.length === 1){alert("You have more than one Perimeter, delete the extra(s)");
+            if(perimeter.length === 1){window.confirm("You have more than one Perimeter, delete the extra(s)");
                 return;}
             perimeter.push(map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getCoordinates());}
         i = i + 1
@@ -69,11 +69,11 @@ console.log(numFeat.length)
     while (i < numFeat.length+1);
 
 if (wells.length === 0) {
-    console.log("You need wells to perform the analysis, please add at least one well.");
+    window.confirm("You need wells to perform the analysis, please add at least one well.");
     return;
     }
 else if (perimeter.length === 0) {
-    console.log ("You need a boundary for your analysis, please add a boundary.");
+    window.confirm("You need a boundary for your analysis, please add a boundary.");
     return;
     }
 
@@ -184,7 +184,7 @@ console.log(cellSide);
 //Cells are defined at the corners, water table elevation is defined at the center of the cell
 
 var waterTable = [];
-var periferyTable = [];
+var waterTableRegional = [];
 var sum = 0.0;  //This is for summing q*ln(R/r)
 
 console.log("Getting water table");
@@ -217,7 +217,7 @@ console.log("Getting water table");
 // This code builds the grid using the bounding box as the zoomed in view of the user
 for (long = mapXCoords[0]-cellSide; long < mapXCoords[1]; long += cellSide) {
     for (lat = mapYCoords[0]-cellSide; lat < mapYCoords[1]; lat += cellSide){
-        periferyTable.push({
+        waterTableRegional.push({
             'type': 'Feature',
             'geometry': {
                 'type': 'Polygon',
@@ -238,18 +238,18 @@ for (long = mapXCoords[0]-cellSide; long < mapXCoords[1]; long += cellSide) {
     }
 
 //console.log(waterTable);
-//console.log(periferyTable);
+//console.log(peripheryTable);
 
-var raster_elev = {
-    'type': 'FeatureCollection',
-    'crs': {
-        'type': 'name',
-        'properties':{
-            'name':'EPSG:4326'
-            }
-    },
-    'features': waterTable
-};
+//var raster_elev = {
+//    'type': 'FeatureCollection',
+//    'crs': {
+//        'type': 'name',
+//        'properties':{
+//            'name':'EPSG:4326'
+//            }
+//    },
+//    'features': waterTable
+//};
 var raster_elev_mapView = {
     'type': 'FeatureCollection',
     'crs': {
@@ -258,10 +258,10 @@ var raster_elev_mapView = {
             'name':'EPSG:4326'
             }
     },
-    'features': periferyTable
+    'features': waterTableRegional
 };
-//addWaterTable(raster_elev);
-addWaterTable(raster_elev_mapView);
+//addWaterTable(raster_elev,"Water Table Elevations");
+addWaterTable(raster_elev_mapView,"Water Table Elevations");
 }
 
 //  #################################### Calculate the water elevation of each cell  ###################################
@@ -324,13 +324,13 @@ return wtElevation;
 
 //  #################################### Add the new water table raster to the map #####################################
 
-function addWaterTable(raster_elev){
+function addWaterTable(raster_elev,titleName){
 
 var getStyleColor;
 
 getStyleColor = function(value) {
     if (value > Number(dwte.value)+Number(dwte.value*0.375))
-        return [0,32,229,0.7];       //blue, Hex:0020E5
+        return [0,32,229,0.7];       //Blue, Hex:0020E5
     else if (value > Number(dwte.value)+Number(dwte.value*0.125))
         return [1,107,231,0.7];       //Light Blue, Hex:016BE7
     else if (value > Number(dwte.value)+Number(dwte.value*0.25))
@@ -338,9 +338,9 @@ getStyleColor = function(value) {
     else if (value > dwte.value)
         return [0,218,157,0.7];       //Turqoise(ish), Hex:00DA9D
     else if (value > Number(dwte.value)-Number(dwte.value*0.125))
-        return [0,255,0,0.7];         //green
+        return [0,255,0,0.7];         //Green
     else if (value > Number(dwte.value)-Number(dwte.value*0.25))
-        return [255,255,0,0.7];       //yellow, Hex:FFFF00
+        return [255,255,0,0.7];       //Yellow, Hex:FFFF00
     else if (value > Number(dwte.value)-Number(dwte.value*0.375))
         return [196,87,0,0.7];       //Orange, Hex:C45700
     else
@@ -395,20 +395,31 @@ var vectorSource = new ol.source.Vector({
     features: format.readFeatures(collection,
     {featureProjection:"EPSG:4326"})
     });
+
+var display = true;
+
+//if (titleName === "Peripheral Area")
+//    display = false;
+
 var vector = new ol.layer.Image({
+        legend_title: titleName,
         source: new ol.source.ImageVector({
             source: vectorSource,
             style: styleFunction
-        })
+        }),
     });
+
+// This sets the initial state of the peripheral area as not visible, to be toggled by the user
+
+//vector.setVisible(display);
 map.addLayer(vector);
+
 
 
 
 }
 //Create public functions to be called in the controller
-app = {dewater: dewater,
-        verify: verify}
+app = {verify: verify}
 
 
 

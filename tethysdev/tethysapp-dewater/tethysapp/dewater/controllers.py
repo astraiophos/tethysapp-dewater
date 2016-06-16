@@ -21,7 +21,7 @@ def tool(request):
         projection='EPSG:4326',
         center=[-111.64925, 40.24721],
         zoom=15.5,
-        maxZoom=18,
+        maxZoom=20,
         minZoom=2
     )
 
@@ -46,6 +46,7 @@ def tool(request):
             legend=True
     )
 
+    # Define text input boxes for UI
     k = TextInput(display_text='Average Hydraulic Conductivity',
                   name='k',
                   initial='0.000231',
@@ -81,9 +82,11 @@ def tool(request):
                   prepend='Elev. =',
                   append='[ft]',
                   )
+
     execute = Button(display_text='Calculate Water Table Elevations',
                      attributes='onclick=app.verify()',
                      submit=True)
+
     instructions = Button(display_text='Instructions',
                      attributes='onclick=app.dewater()',
                      submit=True)
