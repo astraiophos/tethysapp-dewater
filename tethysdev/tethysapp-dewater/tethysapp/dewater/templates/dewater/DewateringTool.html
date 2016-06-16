@@ -4,6 +4,8 @@
 
 {% block app_navigation_items %}
 
+  {% gizmo button instructions %}
+
 <li class="title">Aquifer Properties</li>
 <div id="myTabs"></div>
 <form id="dewater" action="{% url 'dewater:tool' %}" method="post">
@@ -17,14 +19,15 @@
 </form>
   {% gizmo button execute %}
 
-  {% gizmo button instructions %}
+  <!--<a href="#sampleModal" role="button" class="btn btn-success" data-toggle="modal">Show Message Box</a>-->
+  <!--{% gizmo message_box message_box %}-->
+
 {% endblock %}
 
 
 {% block app_content %}
 
-
-
   {% gizmo map_view map_view_options %}
+
 
 {% endblock %}

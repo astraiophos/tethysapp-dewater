@@ -46,6 +46,15 @@ def tool(request):
             legend=True
     )
 
+    # Define Message Box for user feedback
+    message_box = MessageBox(name='sampleModal',
+                         title='Message Box Title',
+                         message='Congratulations! This is a message box.',
+                         dismiss_button='Nevermind',
+                         affirmative_button='Proceed',
+                         width=400,
+                         affirmative_attributes='href=javascript:void(0);')
+
     # Define text input boxes for UI
     k = TextInput(display_text='Average Hydraulic Conductivity',
                   name='k',
@@ -85,19 +94,22 @@ def tool(request):
 
     execute = Button(display_text='Calculate Water Table Elevations',
                      attributes='onclick=app.verify()',
-                     submit=True)
+                     submit=True,
+                     classes='btn-success')
 
     instructions = Button(display_text='Instructions',
                      attributes='onclick=app.dewater()',
                      submit=True)
 
     context = { 'page_id' : '1', 'map_view_options': map_view_options,
+                'message_box':message_box,
                 'k':k,
                 'bedrock':bedrock,
                 'iwte':iwte,
                 'q':q,
                 'dwte':dwte,
-                'execute':execute}
+                'execute':execute,
+                'instructions':instructions}
 
     return render(request, 'dewater/DewateringTool.html', context)
 

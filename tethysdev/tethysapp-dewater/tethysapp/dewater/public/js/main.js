@@ -14,6 +14,7 @@ var deltax = 0;
 var deltay = 0;
 var H = 0;
 var Q = 0;
+var hc = 0;
 var sum = 0; //for summing q*ln(R/r)
 var wtElevation = 0;
 //counters for building arrays
@@ -46,10 +47,11 @@ if (H < 0){
     window.confirm("Your desired elevation is higher than the initial elevation");
     return;}
 
-Q = q.value;
-if (Q < 0){
-    window.confirm("For dewatering you need to pump water out, please change the sign of your pumping value");
+hc = k.value;
+if (hc <= 0){
+    window.confirm("Hydraulic conductivity must have a positive value, adjust your input.");
     return;}
+
 
 //this reads the number of features found in the map object and verifies that all of the required features are present
 numFeat = map.getLayers().item(1).getSource().getFeatures();
@@ -398,24 +400,24 @@ var vectorSource = new ol.source.Vector({
 
 var display = true;
 
-//if (titleName === "Peripheral Area")
-//    display = false;
-
 var vector = new ol.layer.Image({
         legend_title: titleName,
+        zIndex: 1,
         source: new ol.source.ImageVector({
             source: vectorSource,
             style: styleFunction
         }),
     });
 
-// This sets the initial state of the peripheral area as not visible, to be toggled by the user
-
-//vector.setVisible(display);
+// Make sure that the layer is not already existing, remove it if the layer does exist
+map = TETHYS_MAP_VIEW.getMap();
+for (i = 0; i < map.getLayers().getProperties().length ; i ++){
+    if (map.getLayers().item(i).getProperties().legend_title === titleName)
+        map.removeLayer(map.getLayers().item(i));
+}
 map.addLayer(vector);
 
-
-
+map.getLayers().item(1).setZIndex(2)
 
 }
 //Create public functions to be called in the controller
