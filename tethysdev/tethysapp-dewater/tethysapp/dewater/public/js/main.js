@@ -30,7 +30,7 @@ map = TETHYS_MAP_VIEW.getMap();
 
 var wells = [];
 var perimeter = [];
-i = 1;
+i = 0;
 
 H = dwte.value - bedrock.value;
 if (H < 0){
@@ -58,17 +58,17 @@ numFeat = map.getLayers().item(1).getSource().getFeatures();
 console.log(numFeat.length)
     do  {
         if (map.getLayers().item(1).getSource().getRevision() === 0) {
-            window.confirm("You don't have any features, please provide the boundary and the well locations.")
+            window.confirm("You don't have any features, please provide a boundary and well locations.")
             return;}
-        if (map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getType() === 'Point') {
-            wells.push(map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getCoordinates());}
-        else if (map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getType() === 'Polygon') {
+        if (map.getLayers().item(1).getSource().getFeatures()[i].getGeometry().getType() === 'Point') {
+            wells.push(map.getLayers().item(1).getSource().getFeatures()[i].getGeometry().getCoordinates());}
+        else if (map.getLayers().item(1).getSource().getFeatures()[i].getGeometry().getType() === 'Polygon') {
             if(perimeter.length === 1){window.confirm("You have more than one Perimeter, delete the extra(s)");
                 return;}
-            perimeter.push(map.getLayers().item(1).getSource().getFeatureById(i).getGeometry().getCoordinates());}
+            perimeter.push(map.getLayers().item(1).getSource().getFeatures()[i].getGeometry().getCoordinates());}
         i = i + 1
     }
-    while (i < numFeat.length+1);
+    while (i < numFeat.length);
 
 if (wells.length === 0) {
     window.confirm("You need wells to perform the analysis, please add at least one well.");
@@ -420,6 +420,7 @@ map.addLayer(vector);
 map.getLayers().item(1).setZIndex(2)
 
 }
+
 //Create public functions to be called in the controller
 app = {verify: verify}
 
