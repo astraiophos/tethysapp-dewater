@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
 //  ########################################## Declare variables here ##################################################
 
 var map;
@@ -21,6 +21,10 @@ var wtElevation = 0;
 var i = 0;
 var c = 0;
 var counter = 0;
+//custom legend functions
+var update_legend;
+var is_defined;
+var clear_legend;
 
 //  #################################### Verify that the user has the necessary variables ##############################
 
@@ -401,7 +405,7 @@ var vectorSource = new ol.source.Vector({
 var display = true;
 
 var vector = new ol.layer.Image({
-        legend_title: titleName,
+        tethys_legend_title: titleName,
         zIndex: 1,
         source: new ol.source.ImageVector({
             source: vectorSource,
@@ -415,11 +419,19 @@ for (i = 0; i < map.getLayers().getProperties().length ; i ++){
     if (map.getLayers().item(i).getProperties().legend_title === titleName)
         map.removeLayer(map.getLayers().item(i));
 }
+vector.tethys_legend_title = 'Water Table'
 map.addLayer(vector);
+
+TETHYS_MAP_VIEW.updateLegend();
 
 map.getLayers().item(1).setZIndex(2)
 
 }
+
+
+//  #################################### Remove Features via button ####################################################
+
+
 
 //Create public functions to be called in the controller
 app = {verify: verify}
