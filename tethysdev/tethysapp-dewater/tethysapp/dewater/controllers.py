@@ -21,7 +21,7 @@ def tool(request):
         projection='EPSG:4326',
         center=[-111.64925, 40.24721],
         zoom=15.5,
-        maxZoom=20,
+        maxZoom=22,
         minZoom=2
     )
 

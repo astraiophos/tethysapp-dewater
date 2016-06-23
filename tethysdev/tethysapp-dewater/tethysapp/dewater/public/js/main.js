@@ -465,8 +465,6 @@ map.getLayers().item(1).setZIndex(2)
 
 //  #################################### Remove Features via button ####################################################
 
-//  Add the button to the map
-
 
 //Create public functions to be called in the controller
 app = {verify: verify}
