@@ -453,8 +453,7 @@ for (i = 0; i < map.getLayers().getProperties().length ; i ++){
         map.removeLayer(map.getLayers().item(i));
 }
 vector.tethys_legend_title = 'Water Table';
-vector.set('feature_selection', false);
-vector.un(['click','drag'])
+//vector.set('feature_selection', false);
 map.addLayer(vector);
 
 TETHYS_MAP_VIEW.updateLegend();
