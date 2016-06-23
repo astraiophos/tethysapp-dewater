@@ -38,22 +38,38 @@ i = 0;
 
 H = dwte.value - bedrock.value;
 if (H < 0){
-    window.confirm("Your desired elevation is lower than the bedrock elevation");
+    //window.confirm("Your desired elevation is lower than the bedrock elevation");
+    $('#ErrorModal').on('show.bs.modal', function (event) {
+        $( "p" ).find("span").text('Your desired elevation is lower than the bedrock elevation');
+    })
+    $('#ErrorModal').modal('show')
     return;}
 
 H = iwte.value - bedrock.value;
 if (H < 0){
-    window.confirm("Your initial elevation is lower than the bedrock elevation");
+    //window.confirm("Your initial elevation is lower than the bedrock elevation");
+    $('#ErrorModal').on('show.bs.modal', function (event) {
+        $( "p" ).find("span").text('Your initial elevation is lower than the bedrock elevation');
+    })
+    $('#ErrorModal').modal('show')
     return;}
 
 H =  iwte.value- dwte.value;
 if (H < 0){
-    window.confirm("Your desired elevation is higher than the initial elevation");
+    //window.confirm("Your desired elevation is higher than the initial elevation");
+    $('#ErrorModal').on('show.bs.modal', function (event) {
+        $( "p" ).find("span").text('Your desired elevation is higher than the initial elevation');
+    })
+    $('#ErrorModal').modal('show')
     return;}
 
 hc = k.value;
 if (hc <= 0){
-    window.confirm("Hydraulic conductivity must have a positive value, adjust your input.");
+    //window.confirm("Hydraulic conductivity must have a positive value, adjust your input.");
+    $('#ErrorModal').on('show.bs.modal', function (event) {
+        $( "p" ).find("span").text('Hydraulic conductivity must have a positive value, adjust your input');
+    })
+    $('#ErrorModal').modal('show')
     return;}
 
 
@@ -62,12 +78,21 @@ numFeat = map.getLayers().item(1).getSource().getFeatures();
 console.log(numFeat.length)
     do  {
         if (map.getLayers().item(1).getSource().getRevision() === 0) {
-            window.confirm("You don't have any features, please provide a boundary and well locations.")
+            //window.confirm("You don't have any features, please provide a boundary and well locations.")
+            $('#ErrorModal').on('show.bs.modal', function (event) {
+                $( "p" ).find("span").text("You don't have any features, please provide a boundary and well locations");
+            })
+            $('#ErrorModal').modal('show')
             return;}
         if (map.getLayers().item(1).getSource().getFeatures()[i].getGeometry().getType() === 'Point') {
             wells.push(map.getLayers().item(1).getSource().getFeatures()[i].getGeometry().getCoordinates());}
         else if (map.getLayers().item(1).getSource().getFeatures()[i].getGeometry().getType() === 'Polygon') {
-            if(perimeter.length === 1){window.confirm("You have more than one Perimeter, delete the extra(s)");
+            if(perimeter.length === 1){
+                //window.confirm("You have more than one perimeter, delete the extra(s)");
+                $('#ErrorModal').on('show.bs.modal', function (event) {
+                    $( "p" ).find("span").text("You have more than one Perimeter, delete the extra(s)");
+                })
+                $('#ErrorModal').modal('show')
                 return;}
             perimeter.push(map.getLayers().item(1).getSource().getFeatures()[i].getGeometry().getCoordinates());}
         i = i + 1
@@ -75,11 +100,19 @@ console.log(numFeat.length)
     while (i < numFeat.length);
 
 if (wells.length === 0) {
-    window.confirm("You need wells to perform the analysis, please add at least one well.");
+    //window.confirm("You need wells to perform the analysis, please add at least one well.");
+    $('#ErrorModal').on('show.bs.modal', function (event) {
+        $( "p" ).find("span").text("You need wells to perform the analysis, please add at least one well");
+    })
+    $('#ErrorModal').modal('show')
     return;
     }
 else if (perimeter.length === 0) {
-    window.confirm("You need a boundary for your analysis, please add a boundary.");
+    //window.confirm("You need a boundary for your analysis, please add a boundary.");
+    $('#ErrorModal').on('show.bs.modal', function (event) {
+        $( "p" ).find("span").text("You need a boundary for your analysis, please add a boundary");
+    })
+    $('#ErrorModal').modal('show')
     return;
     }
 
@@ -267,7 +300,7 @@ var raster_elev_mapView = {
     'features': waterTableRegional
 };
 //addWaterTable(raster_elev,"Water Table Elevations");
-addWaterTable(raster_elev_mapView,"Water Table Elevations");
+addWaterTable(raster_elev_mapView,"Water Table");
 }
 
 //  #################################### Calculate the water elevation of each cell  ###################################
@@ -416,10 +449,12 @@ var vector = new ol.layer.Image({
 // Make sure that the layer is not already existing, remove it if the layer does exist
 map = TETHYS_MAP_VIEW.getMap();
 for (i = 0; i < map.getLayers().getProperties().length ; i ++){
-    if (map.getLayers().item(i).getProperties().legend_title === titleName)
+    if (map.getLayers().item(i).getProperties().tethys_legend_title === titleName)
         map.removeLayer(map.getLayers().item(i));
 }
-vector.tethys_legend_title = 'Water Table'
+vector.tethys_legend_title = 'Water Table';
+vector.set('feature_selection', false);
+vector.un(['click','drag'])
 map.addLayer(vector);
 
 TETHYS_MAP_VIEW.updateLegend();
@@ -431,6 +466,7 @@ map.getLayers().item(1).setZIndex(2)
 
 //  #################################### Remove Features via button ####################################################
 
+//  Add the button to the map
 
 
 //Create public functions to be called in the controller
