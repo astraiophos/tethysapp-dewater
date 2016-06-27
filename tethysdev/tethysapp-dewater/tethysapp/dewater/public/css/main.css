@@ -1,0 +1,46 @@
+div.legend {
+    /* To correctly align image, regardless of content height: */
+    vertical-align: top;
+    display: inline-block;
+    /* To horizontally center images and caption */
+    text-align: center;
+    /* The width of the container also implies margin around the images. */
+    width: 50px;
+}
+div.foo {
+  width: 40px;
+  height: 20px;
+  margin: 5px;
+}
+
+.blue {
+  background: #0020E5;
+}
+.lBlue{
+  background: #016BE7;
+}
+.eLBlue {
+  background: #009EDF;
+}
+.turq{
+  background: #00DA9D;
+}
+.green{
+  background: rgba(0,255,0,1);
+}
+.yellow{
+  background: #FFFF00;
+}
+.orange{
+  background: #C45700;
+}
+.red{
+  background: #BF0017;
+}
+.black{
+  background: rgba(0, 0, 0, 1);
+}
+.elevation {
+    /* Make the caption a block so it occupies its own line. */
+    display: block;
+}

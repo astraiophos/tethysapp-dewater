@@ -370,9 +370,9 @@ var getStyleColor;
 getStyleColor = function(value) {
     if (value > Number(dwte.value)+Number(dwte.value*0.375))
         return [0,32,229,0.7];       //Blue, Hex:0020E5
-    else if (value > Number(dwte.value)+Number(dwte.value*0.125))
-        return [1,107,231,0.7];       //Light Blue, Hex:016BE7
     else if (value > Number(dwte.value)+Number(dwte.value*0.25))
+        return [1,107,231,0.7];       //Light Blue, Hex:016BE7
+    else if (value > Number(dwte.value)+Number(dwte.value*0.125))
         return [0,158,223,0.7];     //Lighter Blue, Hex:009EDF
     else if (value > dwte.value)
         return [0,218,157,0.7];       //Turqoise(ish), Hex:00DA9D
@@ -453,6 +453,7 @@ for (i = 0; i < map.getLayers().getProperties().length ; i ++){
         map.removeLayer(map.getLayers().item(i));
 }
 vector.tethys_legend_title = 'Water Table';
+//vector.tethys_feature_selection = 'false';
 //vector.set('feature_selection', false);
 map.addLayer(vector);
 
