@@ -461,8 +461,50 @@ TETHYS_MAP_VIEW.updateLegend();
 
 map.getLayers().item(1).setZIndex(2)
 
+toggle(true);
 }
 
+//  #################################### Toggle Color Legend On/Off ####################################################
+
+function toggle(boolean){
+    var ele = "";
+    i = 1;
+
+    do{
+        if(i == 1){
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number(1)+Number(dwte.value*0.375)));
+            i = i+1;}
+        if(i == 2){
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number(dwte.value*0.375))) + "-" + Math.round(Number(Number(dwte.value)+Number(dwte.value*0.25)));
+            i = i+1;}
+        if(i == 3){
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number(dwte.value*0.25))) + "-" + Math.round(Number(Number(dwte.value)+Number(dwte.value*0.125)));
+            i = i+1;}
+        if(i == 4){
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number(dwte.value*0.125))) + "-" + Math.round(Number(dwte.value));
+            i = i+1;}
+        if(i == 5){
+            document.getElementById(String(i)).innerHTML = Math.round(dwte.value) + "-" + Math.round(Number(Number(dwte.value)-Number(dwte.value*0.125)));
+            i = i+1;}
+        if(i == 6){
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)-Number(dwte.value*0.125))) + "-" + Math.round(Number(Number(dwte.value)-Number(dwte.value*0.25)));
+            i = i+1;}
+        if(i == 7){
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)-Number(dwte.value*0.25))) + "-" + Math.round(Number(Number(dwte.value)-Number(dwte.value*0.375)));
+            i = i+1;}
+        if(i == 8){
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)-Number(dwte.value*0.375))) + "-" + Number(1);
+            i = i+1;}
+    }
+    while(i < 9);
+
+    var ele = document.getElementById("colorLegend");
+
+    if (boolean == true)
+        ele.style.display = "block";
+    else
+        ele.style.display = "none";
+};
 
 //  #################################### Remove Features via button ####################################################
 
