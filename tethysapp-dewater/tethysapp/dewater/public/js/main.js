@@ -75,7 +75,7 @@ if (hc <= 0){
 
 //this reads the number of features found in the map object and verifies that all of the required features are present
 numFeat = map.getLayers().item(1).getSource().getFeatures();
-console.log(numFeat.length)
+//console.log(numFeat.length)
     do  {
         if (map.getLayers().item(1).getSource().getRevision() === 0) {
             //window.confirm("You don't have any features, please provide a boundary and well locations.")
@@ -209,7 +209,7 @@ mapYCoords[1] = mapView[3];
 var scale = 0.1;
 var cellSide = 0.0;
 
-console.log("Getting cellSide");
+//console.log("Getting cellSide");
 
 if (Math.abs(pXCoords[0]-pXCoords[1]) > Math.abs(pYCoords[0]-pYCoords[1])){
     cellSide = Math.abs(pXCoords[0]-pXCoords[1])*scale;}
@@ -218,7 +218,7 @@ else if (Math.abs(pXCoords[0]-pXCoords[1]) < Math.abs(pYCoords[0]-pYCoords[1])) 
 else {
     cellSide = cellSide + Math.abs(pXCoords[0]-pXCoords[1])*scale;}
 
-console.log(cellSide);
+//console.log(cellSide);
 //This section constructs the featurecollection polygons defining the water table elevations
 //Cells are defined at the corners, water table elevation is defined at the center of the cell
 
@@ -226,7 +226,7 @@ var waterTable = [];
 var waterTableRegional = [];
 var sum = 0.0;  //This is for summing q*ln(R/r)
 
-console.log("Getting water table");
+//console.log("Getting water table");
 
 //  ################################# Build the grid with polygon cells ################################################
 
@@ -271,6 +271,7 @@ for (long = mapXCoords[0]-cellSide; long < mapXCoords[1]; long += cellSide) {
                 },
                 'properties': {
                     'elevation' : elevationCalc(long,lat,wXCoords,wYCoords,cellSide),
+                    'text': Math.round(Number(elevationCalc(long,lat,wXCoords,wYCoords,cellSide))),
                 }
             });
         }
@@ -429,7 +430,7 @@ function styleFunction(feature, resolution){
 
 var collection = raster_elev;
 var format = new ol.format.GeoJSON();
-
+//map.getLayers().item(2).getSource().addFeatures(format.readFeatures(collection, {featureProjection:"EPSG:4326"}))
 var vectorSource = new ol.source.Vector({
     features: format.readFeatures(collection,
     {featureProjection:"EPSG:4326"})
@@ -442,7 +443,7 @@ var vector = new ol.layer.Image({
         zIndex: 1,
         source: new ol.source.ImageVector({
             source: vectorSource,
-            style: styleFunction
+            style: styleFunction,
         }),
     });
 
@@ -540,6 +541,15 @@ app = {verify: verify}
 //    map.getTarget().style.cursor = hit ? 'pointer' :'';
 //    });
 //};
+//
+//map.on('click', function (e) {
+//var pixel = map.getEventPixel(e.originalEvent);
+//var feature = map.forEachFeatureAtPixel(pixel,
+//function (feature) {
+//return feature;
+//});
+//map.getLayers().item(1).getSource().removeFeature(feature);
+//});
 
 });
 
