@@ -319,7 +319,7 @@ var TETHYS_MAP_VIEW = (function() {
       }
 
       switch_interaction(initial_drawing_mode);
-      
+
       // Add drawing controls to the map
       if (is_defined(m_draw_options.controls)) {
         var pan_control;
@@ -670,7 +670,7 @@ var TETHYS_MAP_VIEW = (function() {
 
       m_map.setView(new ol.View(view_obj));
     }
-    
+
     //function to change size of the map when the map element size changes
     $map_element.changeSize(function($this){
       m_map.updateSize();
@@ -1559,7 +1559,7 @@ var TETHYS_MAP_VIEW = (function() {
 
     return !!feature;
   };
-  
+
   // Handle drag feature
   DragFeatureInteraction.prototype.handleDragEvent = function(event) {
     var map = event.map;
