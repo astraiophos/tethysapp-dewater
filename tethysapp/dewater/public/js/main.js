@@ -343,7 +343,7 @@ do {
     }
 while(i < wXCoords.length);
 
-wtElevation = Math.pow((Math.pow(H,2) - sum/(Math.PI*k.value)),0.5)
+wtElevation = Number(Math.pow((Math.pow(H,2) - sum/(Math.PI*k.value)),0.5))+Number(bedrock.value)
 
 // for debugging purposes
 //console.log(wtElevation);
