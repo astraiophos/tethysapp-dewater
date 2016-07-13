@@ -72,12 +72,60 @@ if (hc <= 0){
     $('#ErrorModal').modal('show')
     return;}
 
+if (isNaN(k.value)){
+    //window.confirm("Hydraulic conductivity must have a positive value, adjust your input.");
+    $('#ErrorModal').on('show.bs.modal', function (event) {
+        $( "p" ).find("span").text('Please use a real number value for the Hydraulic conductivity');
+    })
+    $('#ErrorModal').modal('show')
+    return;}
+
+if (isNaN(bedrock.value)){
+    //window.confirm("Hydraulic conductivity must have a positive value, adjust your input.");
+    $('#ErrorModal').on('show.bs.modal', function (event) {
+        $( "p" ).find("span").text('Please use a real number value for the bedrock elevation');
+    })
+    $('#ErrorModal').modal('show')
+    return;}
+
+if (isNaN(iwte.value)){
+    //window.confirm("Hydraulic conductivity must have a positive value, adjust your input.");
+    $('#ErrorModal').on('show.bs.modal', function (event) {
+        $( "p" ).find("span").text('Please use a real number value for the initial water table elevation');
+    })
+    $('#ErrorModal').modal('show')
+    return;}
+
+if (q.value<=0){
+    //window.confirm("Hydraulic conductivity must have a positive value, adjust your input.");
+    $('#ErrorModal').on('show.bs.modal', function (event) {
+        $( "p" ).find("span").text('Your pumping value needs to be greater than 0');
+    })
+    $('#ErrorModal').modal('show')
+    return;}
+
+if (isNaN(q.value)){
+    //window.confirm("Hydraulic conductivity must have a positive value, adjust your input.");
+    $('#ErrorModal').on('show.bs.modal', function (event) {
+        $( "p" ).find("span").text('Please use a real number value for the pumping value');
+    })
+    $('#ErrorModal').modal('show')
+    return;}
+
+if (isNaN(dwte.value)){
+    //window.confirm("Hydraulic conductivity must have a positive value, adjust your input.");
+    $('#ErrorModal').on('show.bs.modal', function (event) {
+        $( "p" ).find("span").text('Please use a real number value for the desired water table elevation');
+    })
+    $('#ErrorModal').modal('show')
+    return;}
+
 
 //this reads the number of features found in the map object and verifies that all of the required features are present
 numFeat = map.getLayers().item(1).getSource().getFeatures();
 //console.log(numFeat.length)
     do  {
-        if (map.getLayers().item(1).getSource().getRevision() === 0) {
+        if (map.getLayers().item(1).getSource().getFeatures() == 0) {
             //window.confirm("You don't have any features, please provide a boundary and well locations.")
             $('#ErrorModal').on('show.bs.modal', function (event) {
                 $( "p" ).find("span").text("You don't have any features, please provide a boundary and well locations");
@@ -343,7 +391,7 @@ do {
     }
 while(i < wXCoords.length);
 
-wtElevation = Number(Math.pow((Math.pow(H,2) - sum/(Math.PI*k.value)),0.5))+Number(bedrock.value)
+wtElevation = Number(Math.pow((Math.pow(H,2) - sum/(Math.PI*k.value)),0.5))+ Number(bedrock.value)
 
 // for debugging purposes
 //console.log(wtElevation);
@@ -369,19 +417,19 @@ function addWaterTable(raster_elev,titleName){
 var getStyleColor;
 
 getStyleColor = function(value) {
-    if (value > Number(dwte.value)+Number(dwte.value*0.375))
+    if (value > Number(dwte.value)+Number((dwte.value-bedrock.value)*0.375))
         return [0,32,229,0.7];       //Blue, Hex:0020E5
-    else if (value > Number(dwte.value)+Number(dwte.value*0.25))
+    else if (value > Number(dwte.value)+Number((dwte.value-bedrock.value)*0.25))
         return [1,107,231,0.7];       //Light Blue, Hex:016BE7
-    else if (value > Number(dwte.value)+Number(dwte.value*0.125))
+    else if (value > Number(dwte.value)+Number((dwte.value-bedrock.value)*0.125))
         return [0,158,223,0.7];     //Lighter Blue, Hex:009EDF
     else if (value > dwte.value)
         return [0,218,157,0.7];       //Turqoise(ish), Hex:00DA9D
-    else if (value > Number(dwte.value)-Number(dwte.value*0.125))
+    else if (value > Number(dwte.value)-Number((dwte.value-bedrock.value)*0.125))
         return [0,255,0,0.7];         //Green
-    else if (value > Number(dwte.value)-Number(dwte.value*0.25))
+    else if (value > Number(dwte.value)-Number((dwte.value-bedrock.value)*0.25))
         return [255,255,0,0.7];       //Yellow, Hex:FFFF00
-    else if (value > Number(dwte.value)-Number(dwte.value*0.375))
+    else if (value > Number(dwte.value)-Number((dwte.value-bedrock.value)*0.375))
         return [196,87,0,0.7];       //Orange, Hex:C45700
     else
         return [191,0,23, 0.7];           //Red, Hex:BF0017
@@ -471,33 +519,32 @@ function toggleColorLegend(boolean){
     var ele = "";
     i = 1;
 
-    do{
-        if(i == 1){
-            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number(1)+Number(dwte.value*0.375)));
-            i = i+1;}
-        if(i == 2){
-            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number(dwte.value*0.375))) + "-" + Math.round(Number(Number(dwte.value)+Number(dwte.value*0.25)));
-            i = i+1;}
-        if(i == 3){
-            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number(dwte.value*0.25))) + "-" + Math.round(Number(Number(dwte.value)+Number(dwte.value*0.125)));
-            i = i+1;}
-        if(i == 4){
-            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number(dwte.value*0.125))) + "-" + Math.round(Number(dwte.value));
-            i = i+1;}
-        if(i == 5){
-            document.getElementById(String(i)).innerHTML = Math.round(dwte.value) + "-" + Math.round(Number(Number(dwte.value)-Number(dwte.value*0.125)));
-            i = i+1;}
-        if(i == 6){
-            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)-Number(dwte.value*0.125))) + "-" + Math.round(Number(Number(dwte.value)-Number(dwte.value*0.25)));
-            i = i+1;}
-        if(i == 7){
-            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)-Number(dwte.value*0.25))) + "-" + Math.round(Number(Number(dwte.value)-Number(dwte.value*0.375)));
-            i = i+1;}
-        if(i == 8){
-            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)-Number(dwte.value*0.375))) + "-" + Number(1);
-            i = i+1;}
-    }
-    while(i < 9);
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number(1)+Number((dwte.value-bedrock.value)*0.375)));
+            i = i+1;
+
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number((dwte.value-bedrock.value)*0.375))) + "-" + Math.round(Number(Number(dwte.value)+Number((dwte.value-bedrock.value)*0.25)));
+            i = i+1;
+
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number((dwte.value-bedrock.value)*0.25))) + "-" + Math.round(Number(Number(dwte.value)+Number((dwte.value-bedrock.value)*0.125)));
+            i = i+1;
+
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number((dwte.value-bedrock.value)*0.125))) + "-" + Math.round(Number(dwte.value));
+            i = i+1;
+
+            document.getElementById(String(i)).innerHTML = Math.round(dwte.value) + "-" + Math.round(Number(Number(dwte.value)-Number((dwte.value-bedrock.value)*0.125)));
+            i = i+1;
+
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)-Number((dwte.value-bedrock.value)*0.125))) + "-" + Math.round(Number(Number(dwte.value)-Number((dwte.value-bedrock.value)*0.25)));
+            i = i+1;
+
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)-Number((dwte.value-bedrock.value)*0.25))) + "-" + Math.round(Number(Number(dwte.value)-Number((dwte.value-bedrock.value)*0.375)));
+            i = i+1;
+
+            document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)-Number((dwte.value-bedrock.value)*0.375))) + "-" + Number(Number(bedrock.value) + Number(1));
+            i = i+1;
+
+            document.getElementById(String(i)).innerHTML = Math.round(Number(bedrock.value));
+            i = i+1;
 
     var ele = document.getElementById("colorLegend");
 
