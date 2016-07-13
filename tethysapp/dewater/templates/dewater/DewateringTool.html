@@ -9,8 +9,7 @@
   <button type="button" class="btn btn-default" data-toggle="modal" data-target="#welcome-popup">Instructions</button>
 
 <li class="title">Aquifer Properties</li>
-<div id="myTabs"></div>
-<form id="dewater" action="{% url 'dewater:tool' %}" method="post">
+
   {% csrf_token %}
 
   {% gizmo text_input k %}
@@ -18,7 +17,6 @@
   {% gizmo text_input iwte %}
   {% gizmo text_input q %}
   {% gizmo text_input dwte %}
-</form>
   {% gizmo button execute %}
 
   <!--<a href="#sampleModal" role="button" class="btn btn-success" data-toggle="modal">Show Message Box</a>-->

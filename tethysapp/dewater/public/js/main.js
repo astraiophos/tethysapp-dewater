@@ -462,12 +462,12 @@ TETHYS_MAP_VIEW.updateLegend();
 
 map.getLayers().item(1).setZIndex(2)
 
-toggle(true);
+toggleColorLegend(true);
 }
 
 //  #################################### Toggle Color Legend On/Off ####################################################
 
-function toggle(boolean){
+function toggleColorLegend(boolean){
     var ele = "";
     i = 1;
 
